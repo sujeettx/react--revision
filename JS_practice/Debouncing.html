@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <input class="searchBar" type="text" placeholder="search anything" />
+    <ul class="List"></ul>
+  </body>
+  <script>
+    let data;
+    const api = "https://jsonplaceholder.typicode.com/posts";
+    let fetchdata = async (api) => {
+      try {
+        const response = await fetch(api);
+        const result = await response.json();
+        data = result;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchdata(api);
+    let inputBox = document.querySelector(".searchBar");
+    let list = document.querySelector(".List");
+    let timer;
+    inputBox.addEventListener("keyup", (e) => {
+      const query = e.target.value.toLowerCase();
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        list.textContent = ""; // Clear previous results
+        if (query) {
+          const filterData = data.filter((item) =>
+            item.title.toLowerCase().startsWith(query)
+          );
+          filterData.forEach((item) => {
+            const li = document.createElement("li");
+            li.textContent = item.title;
+            list.appendChild(li);
+          });
+        } else {
+          list.textContent = "No results found";
+        }
+      }, 1000);
+    });
+  </script>
+</html>
